@@ -1,0 +1,203 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+</script>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<hr>
+<a href="/zanr" class="btn btn-info right" role="button">IDI NA ŽANROVE</a></div>
+<div class="col-md-12">
+    <hr>
+    <div class="input-group">
+        <span class="input-group-addon">Search</span>
+        <input type="text" name="search_text" id="search_text" placeholder="Search..." class="form-control" />
+    </div>
+
+    <div id="result"></div>
+    <h1 class="text-center">LISTA FILMOVA</h1>
+    <hr>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">NAZIV</th>
+                <th scope="col">ŽANR</th>
+                <th scope="col">OPIS</th>
+                <th scope="col">GODINA IZDANJA</th>
+                <th scope="col">TRAJANJE</th>
+                <th scope="col">Više o filmu</th>
+                <th scope="col">UREDI</th>
+                <th scope="col">BRISI</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <% film.forEach((films)=> { %>
+            <tr>
+                <td><%= films.ime %></td>
+                <td><%= films.id_zanra.naziv %></td>
+                <td><%= films.opis.substring(0,55) %>... </td>
+                <td><%= films.godina_izdanja%></td>
+                <td><%= films.trajanje %> min</td>
+
+                <td> <button class="vise btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"
+                        data-id="<%= films._id %>">
+                        Više o filmu
+                    </button></td>
+
+                <td><button class="uredi btn btn-primary " data-id="<%= films._id %>"
+                        value="<%= films._id %>">UREDI</button>
+                </td>
+                <td><button class="brisi btn btn-danger" data-id="<%= films._id %>"
+                        value="<%= films._id %>">Brisi</button>
+                </td>
+            </tr>
+            <% }) %>
+            </tr>
+
+        </tbody>
+    </table>
+    <div id="prvi">
+    
+    </div>
+
+    <a href="/filmovi/dodavanjeFilmova" class="btn btn-info right" role="button">DODAJTE FILMOVE</a>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle"> </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Zatvori</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    $(document).ready(function () {
+        load_data();
+        function load_data(query) {
+            $.ajax({
+                url: "/filmovi/trazi",
+                method: "post",
+                data: { query: query },
+                success: function (data) {
+                    $("tbody").empty();
+                    data.forEach(function (item) {
+                        $("tbody").append(`<tr><td>${item.ime}</td><td>${item.zanr}</td><td>${item.opis}</td><td>${item.godina_izdanja}</td><td>${item.trajanje} min</td> <a class="btn btn-secondary" onclick="update(${item.employeeId})">Uredi</a>&nbsp;<a class="btn btn-danger" onclick="odm(${item.employeeId})">Briši</a></td></tr>`);
+                    });
+                }
+            });
+        }
+
+        $('#search_text').keyup(function () {
+            var search = $(this).val();
+            if (search != '') {
+                load_data(search);
+            }
+            else {
+                $.ajax({
+                    type: 'GET',
+                    url: '/filmovi/',
+                    success: (response) => {
+                        window.location = "/filmovi"
+                    },
+                    error: (e) => {
+                        alert('error!')
+                    }
+
+                });
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('.brisi').on('click', function (e) {
+            e.preventDefault();
+            $target = $(e.target);
+            var id = $target.attr('data-id');
+            console.log("ID: " + id);
+            $.ajax({
+                type: 'DELETE',
+                url: '/filmovi/delete/' + id,
+                success: (response) => {
+                   window.location="/filmovi"
+                },
+                error: (e) => {
+                    alert('error!')
+                }
+
+            });
+        });
+    });
+    $(document).ready(function () {
+        $('.uredi').on('click', function (e) {
+            e.preventDefault();
+            $target = $(e.target);
+            var id = $target.attr('data-id');
+            console.log("ID: " + id);
+            $.ajax({
+                type: 'GET',
+                url: '/filmovi/edit/' + id,
+                success: (response) => {
+                    window.location = "/filmovi/edit/" + id
+                },
+                error: (e) => {
+                    alert('error!')
+                }
+
+            });
+        });
+
+    });
+
+
+    $(document).ready(function () {
+        $('.vise').on('click', function (e) {
+            e.preventDefault();
+            $target = $(e.target);
+            var id = $target.attr('data-id');
+            console.log("ID: " + id);
+            $.ajax({
+                type: 'GET',
+                url: '/filmovi/' + id,
+                success: (response) => {
+                    console.log("USO")
+                    $(".modal-body").empty();
+                    $(".modal-title").empty();
+
+
+                    $(".modal-title").append(`NASLOV : ${response.ime}`);
+                    $(".modal-body").append(`<p> OPIS : ${response.opis}</p>`);
+                    $(".modal-body").append(`<p> GODINA IZDANJA : ${response.godina_izdanja}</p>`);
+                    $(".modal-body").append(`<p> ZANR : ${response.id_zanra.naziv}</p>`);
+                    $(".modal-body").append(`<p> CIJENA : ${response.cijena} $</p>`);
+                    $(".modal-body").append(`<p> TRAJANJE : ${response.trajanje} min</p>`);
+                    $(".modal-body").append(`<p> JEZIK : ${response.jezik}</p>`);
+
+                },
+                error: (e) => {
+                    alert('error!')
+                }
+
+            });
+        });
+
+    });
+
+
+</script>

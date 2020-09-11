@@ -1,0 +1,69 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+</script>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div class="col-md-12">
+    <h2>DODAVANJE FILMOVA</h2>
+    <hr>
+
+    <form   method="POST">
+        <input type="text" class="my-5 h3" placeholder="naziv" name="naziv" id="name"></br></br>
+        <input type="text" class="my-5 h3" placeholder="opis" name="opis" id="opis"></br></br>
+        <input type="text" class="my-5 h3" placeholder="Godina izdanja" name="godina_izdanja" id="godina_izdanja"></br>
+        <input type="text" class="my-5 h3" placeholder="trajanje" name="trajanje" id="trajanje"></br>
+        <input type="text" class="my-5 h3" placeholder="Cijena" name="cijena" id="cijena"></br>
+        <input type="text" class="my-5 h3" placeholder="Jezik" name="jezik" id="jezik"></br>
+        <p class="my-5 h3"> Odaberite zanr :</p> <select id="zanr_select" name="id_zanra" class="my-5 h3">
+            <% zanr.forEach((zanr)=> { %>2
+            <option value="<%= zanr._id %>" id="z" name="id_zanra"><%= zanr.naziv %></option>
+            <%})%>
+        </select></br></br>
+
+        <button type="submit" class="btn btn-success spremi">SPREMI</button>
+    </form>
+</div>
+
+<script>
+          $(document).ready(function () {
+        $('.spremi').on('click', function (e) {
+            e.preventDefault();
+            var naziv = $("#name").val();
+            var opis = $("#opis").val();
+            var trajanje = $("#trajanje").val();
+            var cijena = $("#cijena").val();
+            var jezik = $("#jezik").val();
+            var godina_izdanja = $("#godina_izdanja").val();
+            var id_zanra = $("#zanr_select").val();
+           // console.log("ID:"+zanr);
+            $.ajax({
+                type: 'POST',
+                url: '/filmovi/',
+                data:{
+                    naziv,
+                    opis,
+                    godina_izdanja,
+                    trajanje,
+                    cijena,
+                    jezik,
+                    id_zanra,
+                },
+                success: (response) => {
+                    window.location = "/filmovi/"
+                },
+                error: (e) => {
+                    alert('error!')
+                }
+
+            });
+        });
+
+    });
+
+
+    function GetSelectedText() {
+        var e = document.getElementById("zanr_select");
+        var result = e.options[e.selectedIndex].text;
+    }
+</script>

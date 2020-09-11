@@ -1,0 +1,53 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<div class="col-md-12">
+    <hr>
+    <h2>UREDJIVANJE FILMA</h2>
+    <hr>
+    <form action="/filmovi/edit/<%=uredi._id%>" method="POST">
+        <p class="my-5 h4">NAZIV FILMA:</p>
+         <input type="text" placeholder="naziv" class="my-5 h4" name="naziv"
+            value="<%= uredi.ime %>"></br>
+        <p class="my-5 h4">OPIS :</p>
+         <textarea type="text" rows="10" cols="50" class="my-5 h4" name="opis"
+             ><%= uredi.opis %></textarea></br>
+
+        <p class="my-5 h4">Godina izdanja :</p> <input type="text" class="my-5 h4" name="godina_izdanja"
+            value="<%= uredi.godina_izdanja %>"></br>
+
+       
+             <p class="my-5 h4">Trajanje:</p> <input type="text" placeholder="trajanje" class="my-5 h4" name="trajanje"
+            value="<%= uredi.trajanje %>">
+            <p class="my-5 h4">Cijena:</p> <input type="text" placeholder="cijena" class="my-5 h4" name="cijena"
+            value="<%= uredi.cijena %>">
+            <p class="my-5 h4">Jezik:</p> <input type="text" placeholder="jezik" class="my-5 h4" name="jezik"
+            value="<%= uredi.jezik %>">
+        <p class="my-5 h4"> Zanr :</p> <select id="zanr_select" class="my-5 h4" name="id_zanra">
+            <% zanr.forEach((zanr)=> { %>
+            <option value="<%= zanr._id %>" selected name="id_zanra"><%= zanr.naziv %></option>
+            <%})%>
+
+
+        </select></br></br>
+
+        <button type="submit" class="btn btn-primary">SPREMI</button>
+    </form>
+    <hr>
+</div>
+<script type='text/javascript'>
+  
+    var url = window.location
+
+
+    var a = JSON.parse('<%-JSON.stringify(uredi.id_zanra)%>');
+    console.log(a)
+    
+    $("#zanr_select").val(a);
+
+
+</script>

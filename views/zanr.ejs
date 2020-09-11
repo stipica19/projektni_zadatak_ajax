@@ -1,0 +1,86 @@
+<script src="jquery-3.5.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<div class="col-md-12">
+    <a href="/filmovi" class="btn btn-info right" role="button">IDI NA FILMOVE</a>
+
+    <h1 class="text-center">LISTA ŽANROVA</h1>
+    <hr>
+    </hr>
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">NAZIV</th>
+                <th scope="col">UREDI</th>
+                <th scope="col">BRISI</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <% zanr.forEach((zanr)=> { %>
+            <tr>
+                <td><%= zanr.naziv %></td>
+
+
+                <td> <button class="uredi btn btn-primary" data-id="<%= zanr._id %>"
+                        value="<%= zanr._id %>">UREDI</button>
+                </td>
+                <td><button class="brisi btn btn-danger" data-id="<%= zanr._id %>"
+                        value="<%= zanr._id %>">BRISI</button>
+                </td>
+            </tr>
+            <% }) %>
+            </tr>
+
+        </tbody>
+    </table>
+    <a href="/zanr/dodavanjeZanra" class="btn btn-info right" role="button">DODAJTE ŽANR</a>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('.brisi').on('click', function (e) {
+            e.preventDefault();
+            $target = $(e.target);
+            var id = $target.attr('data-id');
+            console.log("ID: " + id);
+            $.ajax({
+                type: 'DELETE',
+                url: '/zanr/delete/' + id,
+                success: (response) => {
+                    window.location = "/"
+                },
+                error: (e) => {
+                    console.log(e)
+                }
+
+            });
+        });
+
+    });
+    $(document).ready(function () {
+        $('.uredi').on('click', function (e) {
+            e.preventDefault();
+            $target = $(e.target);
+            var id = $target.attr('data-id');
+            console.log("ID: " + id);
+            $.ajax({
+                type: 'GET',
+                url: '/zanr/edit/' + id,
+                success: (response) => {
+                    window.location = "/zanr/edit/" + id
+                },
+                error: (e) => {
+                    console.log(e)
+                }
+
+            });
+        });
+
+    });
+</script>
