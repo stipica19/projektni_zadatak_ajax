@@ -6,7 +6,7 @@ const Zanr = require("./models/zanr");
 const cors = require("cors");
 const app = express();
 
-mongoose.connect("mongodb://localhost/baze", { useNewUrlParser: true });
+mongoose.connect("mongodb://mongo:27017/baze", { useNewUrlParser: true });
 var db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error"));
 db.once("open", () => {
